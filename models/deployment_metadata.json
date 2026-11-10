@@ -1,0 +1,30 @@
+{
+    "model_name": "LightGBM",
+    "version": "1.0.0",
+    "deployment_date": "2026-11-10 17:26:08",
+    "status": "Production Active",
+    "metrics": {
+        "RMSE": 71.05053254293642,
+        "MAE": 47.78198656141373,
+        "R2": 0.8961569829740846
+    },
+    "feature_columns": [
+        "yr",
+        "mnth",
+        "hr",
+        "weekday",
+        "temp",
+        "atemp",
+        "hum",
+        "windspeed",
+        "season_springer",
+        "season_summer",
+        "season_winter",
+        "holiday_Yes",
+        "workingday_Working Day",
+        "weathersit_Heavy Rain",
+        "weathersit_Light Snow",
+        "weathersit_Mist"
+    ],
+    "input_features_count": 16
+}
