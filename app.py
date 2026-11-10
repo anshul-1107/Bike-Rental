@@ -123,7 +123,9 @@ st.markdown("""
 # Constants and Directories
 # ------------------------------------------------------------------------------
 MODELS_DIR = "models"
-MODEL_FILE = os.path.join(MODELS_DIR, "best_bike_rental_model.joblib")
+MODEL_FILE_PKL = os.path.join(MODELS_DIR, "best_bike_rental_model.pkl")
+MODEL_FILE_JOBLIB = os.path.join(MODELS_DIR, "best_bike_rental_model.joblib")
+MODEL_FILE = MODEL_FILE_PKL if os.path.exists(MODEL_FILE_PKL) else MODEL_FILE_JOBLIB
 META_FILE = os.path.join(MODELS_DIR, "deployment_metadata.json")
 BASELINE_LOG_FILE = os.path.join(MODELS_DIR, "monitoring_baseline.csv")
 LIVE_LOG_FILE = os.path.join(MODELS_DIR, "live_prediction_logs.csv")
@@ -143,10 +145,16 @@ DEFAULT_FEATURES = [
 def load_deployed_model():
     """Load the deployed production model and metadata with automatic fallback."""
     os.makedirs(MODELS_DIR, exist_ok=True)
+    target_file = MODEL_FILE_PKL if os.path.exists(MODEL_FILE_PKL) else MODEL_FILE_JOBLIB
     
-    if os.path.exists(MODEL_FILE) and os.path.exists(META_FILE):
+    if os.path.exists(target_file) and os.path.exists(META_FILE):
         try:
-            model = joblib.load(MODEL_FILE)
+            if target_file.endswith('.pkl'):
+                import pickle
+                with open(target_file, 'rb') as f:
+                    model = pickle.load(f)
+            else:
+                model = joblib.load(target_file)
             with open(META_FILE, 'r') as f:
                 metadata = json.load(f)
             return model, metadata

@@ -1305,11 +1305,18 @@ deployment_metadata = {
     "input_features_count": len(feature_columns)
 }
 
-# Save model binary and metadata
-model_path = os.path.join(deploy_dir, "best_bike_rental_model.joblib")
+# Save model binary (both .pkl and .joblib formats) and metadata
+import pickle
+model_path_pkl = os.path.join(deploy_dir, "best_bike_rental_model.pkl")
+model_path_joblib = os.path.join(deploy_dir, "best_bike_rental_model.joblib")
 meta_path = os.path.join(deploy_dir, "deployment_metadata.json")
 
-joblib.dump(best_deployed_model, model_path)
+# Export as Pickle (.pkl)
+with open(model_path_pkl, "wb") as f:
+    pickle.dump(best_deployed_model, f)
+
+# Export as Joblib (.joblib)
+joblib.dump(best_deployed_model, model_path_joblib)
 
 with open(meta_path, "w") as f:
     json.dump(deployment_metadata, f, indent=4)
@@ -1318,7 +1325,8 @@ print("\n" + "=" * 70)
 print("7. MODEL DEPLOYMENT ARTIFACTS EXPORTED")
 print("=" * 70)
 print(f"Active Production Model : {best_model_name}")
-print(f"Model Artifact Path     : {model_path}")
+print(f"Pickle Model File (.pkl): {model_path_pkl}")
+print(f"Joblib Model File       : {model_path_joblib}")
 print(f"Metadata Artifact Path  : {meta_path}")
 print(f"Total Feature Inputs    : {len(feature_columns)}")
 print(f"Production Test RMSE    : {best_overall_model['RMSE']:.2f}")
